@@ -34,7 +34,6 @@ def print_gradescope_classes(driver):
                 # Get the assignment name
                 name_tag = assignment.find('th', {'role': 'rowheader'})
                 name = name_tag.text
-                # print("name: ", name)
 
                 # Print out the assignments name and due date
                 print("  |", name, " is due:", due_date)
@@ -65,16 +64,6 @@ def run_gradescope(username, password):
 
     # Log in to calnet
     utils.calnet_login(driver, username, password)
-
-    print("Please accept duo request.")
-
-    while ("trust" not in driver.page_source):
-        continue
-
-    # Hit the "do not trust" for the duo auth
-    print("Not trusting the browser")
-    no_trust = driver.find_element(By.ID, 'dont-trust-browser-button')
-    no_trust.click()
 
     # Wait for the duo log in by stalling
     while ("gradescope" not in driver.current_url):
