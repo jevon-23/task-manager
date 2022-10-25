@@ -1,0 +1,9 @@
+What do we want to do:
+  1. I want something that will go out and fetch all of the assignments that I have to do for school
+     1.1. Check every course in bcourses for what is due this week
+     1.2. Check every course in gradescope for what is due this week
+
+  2. Format it in a nice and readable way 
+     2.1. Example:
+          {Class_name}:
+            | {Date} : {Assignment}
