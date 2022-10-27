@@ -8,16 +8,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import utils
 
+"""Gets the next 8 days including today (ex: Mon->Mon)"""
 def get_this_week():
     # A of strings representing this week
-    out = []
-    today = datetime.date.today()
+    this_week = []
 
+    today = datetime.date.today()
     # The next 7 days
-    this_week = [today + datetime.timedelta(days=i) for i in range(0, 8)]
+    week = [today + datetime.timedelta(days=i) for i in range(0, 8)]
 
     # Get in bcourses date format
-    for date in this_week:
+    for date in week:
         day = date.day
         month_num = date.month
 
@@ -29,9 +30,15 @@ def get_this_week():
         #   Jan 01
         date_string = month_name + ' ' + str(day)
 
-        out.append(date_string)
-    return out
+        this_week.append(date_string)
+    return this_week
 
+"""Prints all of the assignments due within the next week
+that are on the bcourses starred page. 
+
+Input:
+    driver: Webdriver elemement already at the course webpage in bcourses
+"""
 def print_bcourses_classes(driver):
 
     # Try to go to the assignments tab
@@ -46,7 +53,10 @@ def print_bcourses_classes(driver):
     assignment_button.click()
     utils.stall_forward(driver, "assignments")
 
+    # Get the next seven days
     this_week = get_this_week()
+
+    # Wait for the right header to load on the page before continuing
     try:
         WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "ig-header"))
@@ -71,10 +81,11 @@ def print_bcourses_classes(driver):
             due_date = assignment.find_element(By.CLASS_NAME, 'screenreader-only')
             # Find the assignment button
         except NoSuchElementException:
-            print('could not find screen-reader')
+            # could not find ig-title or screen-reader
             continue
 
 
+        # First two words of due date is the month and day
         due_date_mo_day = ' '.join(due_date.text.split()[:2])
 
         if (due_date_mo_day in this_week):
@@ -93,9 +104,8 @@ def run_bcourses(username, password):
     driver.get('https://auth.berkeley.edu/cas/login?service=https%3A%2F%2Fbcourses.berkeley.edu%2Flogin%2Fcas')
 
     utils.calnet_login(driver, username, password)
-
-    # Wait for the duo log in by stalling
     utils.stall_forward(driver, "bcourses")
+    
     print('Logged in to Bcourses, getting work needed to be done')
 
     class_boxes = driver.find_elements(By.CLASS_NAME,
@@ -107,7 +117,6 @@ def run_bcourses(username, password):
         # Go to the course website
         class_box = class_boxes[used]
         class_box.click()
-
         utils.stall_forward(driver, "courses")
 
         # Print the assignments due for this class

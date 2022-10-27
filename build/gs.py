@@ -17,6 +17,8 @@ def print_gradescope_classes(driver):
 
     # Get all of the assignments for the class
     assignments = bscontents.find_all('tr', {'role': 'row'})
+
+    # Gradescope in reverse order
     assignments.reverse()
 
     for assignment in assignments:
@@ -24,13 +26,11 @@ def print_gradescope_classes(driver):
         time_left = assignment.find('span',
                                     class_='submissionTimeChart--timeRemaining')
         if time_left is not None:
-            # NOTE: due date is in lower case
-            due_date = time_left.text.lower()
+            due_date = time_left.text.lower() # Note: lowercase due_date
             cond = (("month" not in due_date) and ("week" not in due_date)
                     and ("year" not in due_date) and ("closes" not in due_date)
                     )
             if (cond):
-
                 # Get the assignment name
                 name_tag = assignment.find('th', {'role': 'rowheader'})
                 name = name_tag.text
@@ -66,8 +66,7 @@ def run_gradescope(username, password):
     utils.calnet_login(driver, username, password)
 
     # Wait for the duo log in by stalling
-    while ("gradescope" not in driver.current_url):
-        continue
+    utils.stall_forward(driver, "gradescope")
     print('Logged in to Gradescope, getting work needed to be done')
 
     # Note: find_element looks for 1st occurance, which is the most recent sem
@@ -83,16 +82,14 @@ def run_gradescope(username, password):
         # Go to the course website
         class_box = class_boxes[used]
         class_box.click()
-        while ("courses" not in driver.current_url):
-            continue # stall
+        utils.stall_forward(driver, "courses")
 
         # Print the assignments due for this class
         print_gradescope_classes(driver)
 
         # Go back to main page
         driver.back()
-        while ("courses" in driver.current_url):
-            continue # stall
+        utils.stall_backward(driver, "courses")
 
         # reset variables
         used += 1

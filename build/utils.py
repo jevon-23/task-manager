@@ -1,13 +1,20 @@
 from selenium.webdriver.common.by import By
+
 """
-Store credential information in environment variable so 
-that we do not have to store it in program.
-
-Run this program from a .sh file that sets up environment vars,
-but do not push that .sh file up to git
+Put us into a blocked state until sub_string
+is apart of our current url
 """
+def stall_forward(driver, sub_string):
+    while (sub_string not in driver.current_url):
+        continue # stall
 
-
+"""
+Put us into a blocked state until sub_string
+is no longer apart of our current url
+"""
+def stall_backward(driver, sub_string):
+    while (sub_string in driver.current_url):
+        continue # stall
 """
 Log in to calnet. Calnet is the third party authenticator
 for both gradescope and bcourses for berkeley students.
@@ -40,14 +47,3 @@ def calnet_login(driver, username, password):
 
 
 
-"""
-Put us into a blocked state until sub_string
-is apart of our current url
-"""
-def stall_forward(driver, sub_string):
-    while (sub_string not in driver.current_url):
-        continue # stall
-
-def stall_backward(driver, sub_string):
-    while (sub_string in driver.current_url):
-        continue # stall
