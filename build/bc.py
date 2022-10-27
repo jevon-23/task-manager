@@ -9,9 +9,11 @@ from selenium.webdriver.support import expected_conditions as EC
 import utils
 
 def get_this_week():
+    # A of strings representing this week
     out = []
     today = datetime.date.today()
 
+    # The next 7 days
     this_week = [today + datetime.timedelta(days=i) for i in range(0, 8)]
 
     # Get in bcourses date format
@@ -28,8 +30,8 @@ def get_this_week():
         date_string = month_name + ' ' + str(day)
 
         out.append(date_string)
-
     return out
+
 def print_bcourses_classes(driver):
 
     # Try to go to the assignments tab
@@ -37,7 +39,7 @@ def print_bcourses_classes(driver):
         # Find the assignment button
         assignment_button = driver.find_element(By.CLASS_NAME, 'assignments')
     except NoSuchElementException:
-        print('No assignments for this class')
+        # No assignments for this class
         return
 
     # click if available, and stall until we see the drop down menus
@@ -57,6 +59,8 @@ def print_bcourses_classes(driver):
     # TODO: bcourses has a default pop up first, then the actual name of the tabs,
     #       so leave some time for it to load. (band-aid fix)
     time.sleep(2)
+    course_name = driver.find_elements(By.CLASS_NAME, 'ellipsible')[1].text
+    print('|', course_name)
 
     # Find all of the assignments on the webpage
     assignments = driver.find_elements(By.CLASS_NAME, 'ig-info')
@@ -74,12 +78,9 @@ def print_bcourses_classes(driver):
         due_date_mo_day = ' '.join(due_date.text.split()[:2])
 
         if (due_date_mo_day in this_week):
-            print('name: ', name.text, 'due date: ', due_date.text)
+            print("  |", name.text, " is due:", due_date.text)
 
-    time.sleep(5)
-
-    # print('done')
-
+    time.sleep(5) # Give it some time to finish
     driver.back()
     utils.stall_backward(driver, "assignments")
 
@@ -95,7 +96,7 @@ def run_bcourses(username, password):
 
     # Wait for the duo log in by stalling
     utils.stall_forward(driver, "bcourses")
-    print('Logged in to Gradescope, getting work needed to be done')
+    print('Logged in to Bcourses, getting work needed to be done')
 
     class_boxes = driver.find_elements(By.CLASS_NAME,
                                        'ic-DashboardCard__header_hero')
@@ -130,5 +131,4 @@ if __name__ == '__main__':
     usr = os.environ.get("username")
     pwd = os.environ.get("password")
     run_bcourses(usr, pwd)
-    # get_this_week()
 

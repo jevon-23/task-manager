@@ -7,6 +7,7 @@ username = os.environ.get("username")
 password = os.environ.get("password")
 def main():
     gs.run_gradescope(username, password)
+    bc.run_bcourses(username, password)
 
 if __name__ == '__main__':
     main()
