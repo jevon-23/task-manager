@@ -43,7 +43,7 @@ next week
 """
 def run_gradescope(username, password):
     # Create the chrome driver
-    driver = webdriver.Chrome('./include/chromedriver')
+    driver = webdriver.Chrome(os.path.dirname(__file__) + '/include/chromedriver')
 
     # Go to gradescope
     driver.get('https://gradescope.com')
@@ -51,7 +51,7 @@ def run_gradescope(username, password):
     # Go to the school login for gradescope
     login_button = driver.find_element(By.CLASS_NAME, 'js-logInButton')
     login_button.click()
-    school_crediential = driver.find_element(By.CLASS_NAME, 'btnv7--textWithIcon')
+    school_crediential = driver.find_element(By.CLASS_NAME, 'tiiBtn--textWithIcon')
     school_crediential.click()
 
     # Go to calnet login

@@ -100,7 +100,7 @@ Log in to bcourses and get all the assignments due within the
 next week
 """
 def run_bcourses(username, password):
-    driver = webdriver.Chrome('./include/chromedriver')
+    driver = webdriver.Chrome(os.path.dirname(__file__) + '/include/chromedriver')
     driver.get('https://auth.berkeley.edu/cas/login?service=https%3A%2F%2Fbcourses.berkeley.edu%2Flogin%2Fcas')
 
     utils.calnet_login(driver, username, password)
