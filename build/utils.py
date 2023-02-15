@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+import pickle
 
 """
 Put us into a blocked state until sub_string
@@ -22,7 +23,11 @@ for both gradescope and bcourses for berkeley students.
 Input:
     driver: driver @ the calnet login page
 """
-def calnet_login(driver, username, password):
+def calnet_login(driver, username, password, cookies_file_path):
+    # cookies = pickle.load(open(cookies_file_path, "rb"))
+    # for cookie in cookies:
+    #     driver.add_cookie(cookie)
+
     # Find the username and password field
     username_field = driver.find_element('id', 'username')
     password_field = driver.find_element('id', 'password')
@@ -41,9 +46,11 @@ def calnet_login(driver, username, password):
         continue
 
     # Hit the "do not trust" for the duo auth
-    print("Not trusting the browser")
-    no_trust = driver.find_element(By.ID, 'dont-trust-browser-button')
-    no_trust.click()
+    # print("Not trusting the browser")
+    trust = driver.find_element(By.ID, 'trust-browser-button')
 
+    # pickle.dump(driver.get_cookies(), open(cookies_file_path, "wb"))
+
+    trust.click()
 
 

@@ -1,7 +1,9 @@
 import os
+import keyboard
+import tkinter as tk
+from tkinter import *
 import gs # gradescope
 import bc # bcourses
-
 """
 To do list
 
@@ -18,16 +20,70 @@ Then uses selinum to automate going through all of the courses
 in both bcourses and gradescope, and prints out the assignments
 that are due within the next week
 """
+
 # Get the username and password out the environment variables
 username = os.environ.get("username")
 password = os.environ.get("password")
+output_file_path = './.work/task'
+gs_cookies_file_path = './.work/gs_cookies.pkl'
+bc_cookies_file_path = './.work/bc_cookies.pkl'
+
+def build_test_assignment():
+    return ['abc', '123', 'abc123456']
+
+def build_assignment():
+
+    # Get classes on gradescope
+    gs_assignments = gs.run_gradescope(username, password, gs_cookies_file_path)
+
+    # Get classes on bcourses
+    bc_assignments = bc.run_bcourses(username, password, bc_cookies_file_path)
+
+    assignments = gs_assignments + bc_assignments
+
+    return assignments
+
+def build_tk_window(assignment_str):
+
+    root = Tk()
+    # specify size of window.
+    root.geometry("350x270")
+
+    # Create text widget and specify size.
+    T = Text(root, height = 40, width = 120)
+
+    # Create label
+    l = Label(root, text = "Homework due for the week")
+    l.config(font =("Courier", 14))
+
+    l.pack()
+    T.pack()
+
+    # Insert The Fact.
+    T.insert(tk.END, assignment_str)
+    return root
+
 
 def main():
-    # Get classes on gradescope
-    gs.run_gradescope(username, password)
-    
-    # Get classes on bcourses
-    bc.run_bcourses(username, password)
+    assignments = build_assignment()
+    # assignments = build_test_assignment()
 
+    assignment_str = '\n'.join(assignments) + '\n'
+
+    # Write the output to an output file
+    with open(output_file_path, "w") as file:
+        file.write(assignment_str)
+
+    # Build the tkinter window 
+    root = build_tk_window(assignment_str)
+
+    # Key press actions for tkinter window
+    def key_press_action(event):
+        if (event.char == 'q'):
+            root.destroy() # Quit
+
+
+    root.bind('<KeyPress>', key_press_action)
+    tk.mainloop()
 if __name__ == '__main__':
     main()
