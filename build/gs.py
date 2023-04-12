@@ -46,7 +46,7 @@ def print_gradescope_classes(driver):
 Log in to gradescope and get all the assignments due within the 
 next week
 """
-def run_gradescope(username, password, cookies_file_path):
+def run_gradescope(username, password, cookies_file_path, calnet_lock):
     assignment_list = []
     # Create the chrome driver
     driver = webdriver.Chrome(os.path.dirname(__file__) + '/include/chromedriver')
@@ -76,7 +76,7 @@ def run_gradescope(username, password, cookies_file_path):
 
 
     # Log in to calnet
-    utils.calnet_login(driver, username, password, cookies_file_path)
+    utils.calnet_login(driver, username, password, cookies_file_path, calnet_lock)
 
     # Wait for the duo log in by stalling
     utils.stall_forward(driver, "gradescope")

@@ -106,7 +106,7 @@ def print_bcourses_classes(driver):
 Log in to bcourses and get all the assignments due within the 
 next week
 """
-def run_bcourses(username, password, cookies_file_path):
+def run_bcourses(username, password, cookies_file_path, calnet_lock):
 
     assignment_list = []
     driver = webdriver.Chrome(os.path.dirname(__file__) + '/include/chromedriver')
@@ -117,7 +117,7 @@ def run_bcourses(username, password, cookies_file_path):
     # for cookie in cookies:
     #     driver.add_cookie(cookie)
 
-    utils.calnet_login(driver, username, password, cookies_file_path)
+    utils.calnet_login(driver, username, password, cookies_file_path, calnet_lock)
     utils.stall_forward(driver, "bcourses")
 
     pickle.dump(driver.get_cookies(), open(cookies_file_path, "wb"))
@@ -144,8 +144,7 @@ def run_bcourses(username, password, cookies_file_path):
 
         # reset variables
         used += 1
-        class_boxes = driver.find_elements(By.CLASS_NAME,
-                                           'ic-DashboardCard__header_hero')
+        class_boxes = driver.find_elements(By.CLASS_NAME, 'ic-DashboardCard__header_hero')
 
         # print('class_boxes: ', class_boxes)
     time.sleep(2)

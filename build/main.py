@@ -1,4 +1,7 @@
+import threading
+import sys
 import os
+import datetime
 import keyboard
 import tkinter as tk
 from tkinter import *
@@ -28,16 +31,38 @@ output_file_path = './.work/task'
 gs_cookies_file_path = './.work/gs_cookies.pkl'
 bc_cookies_file_path = './.work/bc_cookies.pkl'
 
+gs_assignments = []
+bc_assignments = []
+
+calnet_lock = threading.Lock()
+
 def build_test_assignment():
     return ['abc', '123', 'abc123456']
 
+# Get classes on gradescope
+def thread_gs():
+    global gs_assignments
+    gs_assignments = gs.run_gradescope(username, password, gs_cookies_file_path, calnet_lock)
+
+def thread_bc():
+    global bc_assignments
+    bc_assignments = bc.run_bcourses(username, password, bc_cookies_file_path, calnet_lock)
+
+
+
 def build_assignment():
 
-    # Get classes on gradescope
-    gs_assignments = gs.run_gradescope(username, password, gs_cookies_file_path)
+    gs_thread = threading.Thread(target=thread_gs, args=())
+    bc_thread = threading.Thread(target=thread_bc, args=())
 
-    # Get classes on bcourses
-    bc_assignments = bc.run_bcourses(username, password, bc_cookies_file_path)
+    gs_thread.start()
+    bc_thread.start()
+
+    # main_thread = threading.main_thread()
+    gs_thread.join()
+    bc_thread.join()
+    # main_thread.join(gs_thread)
+    # main_thread.join(bc_thread)
 
     assignments = gs_assignments + bc_assignments
 
@@ -63,12 +88,24 @@ def build_tk_window(assignment_str):
     T.insert(tk.END, assignment_str)
     return root
 
+def process_args():
+    assignment_str = " "
+    if (len(sys.argv) == 1):
+        assignments = build_assignment()
+        # assignments = build_test_assignment()
+        current_date = datetime.datetime.now().strftime("%x") + '\n'
+
+        assignment_str = current_date + '\n'.join(assignments) + '\n'
+    else:
+        if (sys.argv[1] != 'print'):
+            print("Invalid use of program: Fill in help later")
+            exit(-1)
+        assignment_str = open(output_file_path, "r").read()
+
+    return assignment_str
 
 def main():
-    assignments = build_assignment()
-    # assignments = build_test_assignment()
-
-    assignment_str = '\n'.join(assignments) + '\n'
+    assignment_str = process_args()
 
     # Write the output to an output file
     with open(output_file_path, "w") as file:
