@@ -113,6 +113,7 @@ def run_gradescope(username, password, cookies_file_path, calnet_lock):
         class_boxes = curr_class.find_elements(By.CLASS_NAME, 'courseBox')
 
 
+    print("Finished reading gradescope")
     driver.quit()
 
     return assignment_list
@@ -121,4 +122,4 @@ if __name__ == '__main__':
 
     usr = os.environ.get("username")
     pwd = os.environ.get("password")
-    run_gradescope(usr, pwd)
+    run_gradescope(usr, pwd, "", None)

@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import *
 import gs # gradescope
 import bc # bcourses
+import pyke13 # pyke
 """
 To do list
 
@@ -33,6 +34,7 @@ bc_cookies_file_path = './.work/bc_cookies.pkl'
 
 gs_assignments = []
 bc_assignments = []
+py_assignments = []
 
 calnet_lock = threading.Lock()
 
@@ -48,23 +50,28 @@ def thread_bc():
     global bc_assignments
     bc_assignments = bc.run_bcourses(username, password, bc_cookies_file_path, calnet_lock)
 
-
+def thread_pyke():
+    global py_assignments
+    py_assignments = pyke13.run_pyke("")
 
 def build_assignment():
 
     gs_thread = threading.Thread(target=thread_gs, args=())
     bc_thread = threading.Thread(target=thread_bc, args=())
+    py_thread = threading.Thread(target=thread_pyke, args=())
 
     gs_thread.start()
     bc_thread.start()
+    py_thread.start()
 
     # main_thread = threading.main_thread()
     gs_thread.join()
     bc_thread.join()
+    py_thread.join()
     # main_thread.join(gs_thread)
     # main_thread.join(bc_thread)
 
-    assignments = gs_assignments + bc_assignments
+    assignments = gs_assignments + bc_assignments + py_assignments
 
     return assignments
 

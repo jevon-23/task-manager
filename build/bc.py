@@ -146,16 +146,15 @@ def run_bcourses(username, password, cookies_file_path, calnet_lock):
         used += 1
         class_boxes = driver.find_elements(By.CLASS_NAME, 'ic-DashboardCard__header_hero')
 
-        # print('class_boxes: ', class_boxes)
     time.sleep(2)
     driver.quit()
 
-
+    print("Finished reading bcourses")
     return assignment_list
 
 
 if __name__ == '__main__':
     usr = os.environ.get("username")
     pwd = os.environ.get("password")
-    run_bcourses(usr, pwd)
+    run_bcourses(usr, pwd, "", None)
 
