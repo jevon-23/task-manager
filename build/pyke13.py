@@ -5,10 +5,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time 
-def run_pyke(cookies_file_path):
-
-    email = os.environ.get("email")
-    pwd = os.environ.get("pwd")
+def run_pyke(email, pwd, cookies_file_path):
 
     # Create the chrome driver
     driver = webdriver.Chrome(os.path.dirname(__file__) + '/include/chromedriver')
@@ -29,7 +26,7 @@ def run_pyke(cookies_file_path):
     submit = driver.find_element(By.NAME, "button")
     submit.click()
     utils.stall_forward(driver, "tcs-")
-    time.sleep(4)
+    time.sleep(2.5)
 
     # Now we are on our pyke 13 schedule, get the sessions 4 this week
     events = driver.find_elements(By.CLASS_NAME, 'event_details')

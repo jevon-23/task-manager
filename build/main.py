@@ -26,6 +26,7 @@ that are due within the next week
 """
 
 # Get the username and password out the environment variables
+conig_filepath = './.work/config.txt'
 username = os.environ.get("username")
 password = os.environ.get("password")
 output_file_path = './.work/task'
@@ -52,7 +53,7 @@ def thread_bc():
 
 def thread_pyke():
     global py_assignments
-    py_assignments = pyke13.run_pyke("")
+    py_assignments = pyke13.run_pyke(email, pwd, "")
 
 def build_assignment():
 
@@ -64,12 +65,9 @@ def build_assignment():
     bc_thread.start()
     py_thread.start()
 
-    # main_thread = threading.main_thread()
     gs_thread.join()
     bc_thread.join()
     py_thread.join()
-    # main_thread.join(gs_thread)
-    # main_thread.join(bc_thread)
 
     assignments = gs_assignments + bc_assignments + py_assignments
 
@@ -111,7 +109,24 @@ def process_args():
 
     return assignment_str
 
+def get_config():
+    global username
+    global password
+    global email
+    global pwd
+
+    f = open(conig_filepath)
+    txt = f.read()
+    data = txt.split("\n")
+    data = data[:len(data)-1]
+
+    username = data[0]
+    password = data[1]
+    email = data[2]
+    pwd = data[3]
+
 def main():
+    get_config()
     assignment_str = process_args()
 
     # Write the output to an output file
